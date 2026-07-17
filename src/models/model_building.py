@@ -14,9 +14,9 @@ def main():
     try:
         logger.info("Starting model training...")
         
-        params = yaml.safe_load(open('params.yaml','r'))['model_building']
+        # params = yaml.safe_load(open('params.yaml','r'))['model_building']
         
-        train_data = pd.read_csv('./data/features/train_tfidf.csv')
+        train_data = pd.read_csv('./data/features/train_bow.csv')
         logger.info(f"Train data shape: {train_data.shape}")
         
         X_train = train_data.iloc[:, 0:-1].values
