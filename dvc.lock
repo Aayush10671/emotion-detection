@@ -65,8 +65,8 @@ stages:
       nfiles: 2
     - path: src/models/model_building.py
       hash: md5
-      md5: ef6685ffd4f5d83731469acd2a69b2fa
-      size: 1455
+      md5: 217beda8cf433ce5570bccb644ce1b99
+      size: 2501
     params:
       params.yaml:
         model_building.learning_rate: 0.2
@@ -90,10 +90,21 @@ stages:
       size: 16698
     - path: src/models/model_evaluation.py
       hash: md5
-      md5: c2d28a8c5ea2b78b4d55f3878236466e
-      size: 7340
+      md5: 66d692b31d78396686e67a9735c00e73
+      size: 2197
     outs:
     - path: reports/metrics.json
       hash: md5
       md5: 3d9916170395f45714b3c8627d140cd4
       size: 150
+  model_registration:
+    cmd: python src/models/register_model.py
+    deps:
+    - path: reports/experiment_info.json
+      hash: md5
+      md5: c52bda30fdcbf0681380478da234c260
+      size: 69
+    - path: src/models/register_model.py
+      hash: md5
+      md5: d039625684b370add2cf23de6f1fde9b
+      size: 2150
