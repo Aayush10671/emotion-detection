@@ -54,17 +54,15 @@ def removing_urls(text):
     return url_pattern.sub(r'', text)
 
 
-def normalize_text(df):
-    """Normalize the text data."""
-    try:
-        # Use 'content' instead of 'text' since that's the actual column name
-        df['content'] = df['content'].apply(lower_case)
-        df['content'] = df['content'].apply(remove_stop_words)
-        df['content'] = df['content'].apply(removing_numbers)
-        df['content'] = df['content'].apply(removing_punctuations)
-        df['content'] = df['content'].apply(removing_urls)
-        df['content'] = df['content'].apply(lemmatization)
-        return df
-    except Exception as e:
-        raise
+def normalize_text(text):
+   
+        text = lower_case(text)
+        text = remove_stop_words(text)
+        text = removing_numbers(text)
+        text = removing_punctuations(text)
+        text = removing_urls(text)
+        text = lemmatization(text)
+        return text
+  
+
   
