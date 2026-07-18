@@ -43,7 +43,7 @@ jobs:
           python  -m unittest tests/test_model.py    
 
       - name: promote model to production
-        if: sucess()
+        if: success()
         env:
           DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
           DAGSHUB_PASSWORD: ${{ secrets.DAGSHUB_PASSWORD }}
