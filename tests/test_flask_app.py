@@ -1,11 +1,6 @@
+# tests/test_flask_app.py
 import unittest
-import sys
-import os
-
-# Add project root to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from flask_app.app import app  # Import from flask_app folder
+from flask_app import app  # If app.py is in root directory
 
 class FlaskAppTests(unittest.TestCase):
 
