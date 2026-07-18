@@ -1,6 +1,6 @@
 # tests/test_flask_app.py
 import unittest
-from app import app  # If app.py is in root directory
+from flask_app import app  # If app.py is in root directory
 
 class FlaskAppTests(unittest.TestCase):
 
