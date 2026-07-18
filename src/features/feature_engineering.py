@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 import yaml
-
+import pickle
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -38,6 +38,7 @@ def main():
         os.makedirs(data_path, exist_ok=True)
         train_df.to_csv(os.path.join(data_path, "train_bow.csv"), index=False)
         test_df.to_csv(os.path.join(data_path, "test_bow.csv"), index=False)
+        pickle.dump(vectorizer, open('models/vectorizer.pkl', 'wb'))
         
         logger.info(f"Done! Train shape: {X_train_bow.shape}, Test shape: {X_test_bow.shape}")
         
