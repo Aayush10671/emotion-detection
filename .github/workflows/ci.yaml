@@ -90,4 +90,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
             docker stop emotion-detection2 || true
             docker rm emotion-detection2 || true
-            docker run -d --name emotion-detection2 -p 5000:5000 ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
+            docker run -d --name emotion-detection2 -p 80:5000 \
+            -e DAGSHUB_PAT="${{ secrets.DAGSHUB_PAT }}" \
+            -e DAGSHUB_USERNAME="${{ secrets.DAGSHUB_USERNAME }}" \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
