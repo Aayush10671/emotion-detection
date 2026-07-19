@@ -125,8 +125,5 @@ jobs:
             docker pull 385105852594.dkr.ecr.us-east-1.amazonaws.com/aayush/sentiment_analyzer:latest
             docker stop sentiment_analyzer || true
             docker rm sentiment_analyzer || true
-            docker run -d --name sentiment_analyzer -p 80:5000 \
-            -e DAGSHUB_PAT="${{ secrets.DAGSHUB_PAT }}" \ 
-            -e DAGSHUB_USERNAME="${{ secrets.DAGSHUB_USERNAME }}" \
-            385105852594.dkr.ecr.us-east-1.amazonaws.com/aayush/sentiment_analyzer:latest
+            docker run -d --name sentiment_analyzer -p 80:5000 -e DAGSHUB_PAT="${{ secrets.DAGSHUB_PAT }}" -e DAGSHUB_USERNAME="${{ secrets.DAGSHUB_USERNAME }}" 385105852594.dkr.ecr.us-east-1.amazonaws.com/aayush/sentiment_analyzer:latest
             
