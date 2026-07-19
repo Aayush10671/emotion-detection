@@ -62,35 +62,51 @@ jobs:
         run: |
           python -m unittest tests/test_flask_app.py
 
-      - name: Log in to DockerHub
-        if: success()
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      # - name: Log in to DockerHub
+      #   if: success()
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
+      #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
+      # - name: Build docker image
+      #   if: success()
+      #   run: |
+      #     docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest .
+
+      # - name: push docker image
+      #   if: success()
+      #   run: |
+      #     docker push ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
+
+      # - name: Deploy to ec2
+      #   if: success()
+      #   uses: appleboy/ssh-action@v0.1.5
+      #   with:
+      #     host: ${{ secrets.EC2_HOST}}
+      #     username: ${{ secrets.EC2_USER }}
+      #     key: ${{ secrets.EC2_SSH_KEY }}
+      #     script: |
+      #       docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
+      #       docker stop emotion-detection2 || true
+      #       docker rm emotion-detection2 || true
+      #       docker run -d --name emotion-detection2 -p 80:5000 \
+      #       -e DAGSHUB_PAT="${{ secrets.DAGSHUB_PAT }}" \
+      #       -e DAGSHUB_USERNAME="${{ secrets.DAGSHUB_USERNAME }}" \
+      #       ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
+      - name: login to AWS ECR
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 385105852594.dkr.ecr.us-east-1.amazonaws.com
       - name: Build docker image
-        if: success()
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest .
+          docker build -t aayush/sentiment_analyzer .
 
-      - name: push docker image
-        if: success()
+      - name: Tag docker image
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
+          docker tag aayush/sentiment_analyzer 385105852594.dkr.ecr.us-east-1.amazonaws.com/aayush/sentiment_analyzer:latest
 
-      - name: Deploy to ec2
-        if: success()
-        uses: appleboy/ssh-action@v0.1.5
-        with:
-          host: ${{ secrets.EC2_HOST}}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
-            docker stop emotion-detection2 || true
-            docker rm emotion-detection2 || true
-            docker run -d --name emotion-detection2 -p 80:5000 \
-            -e DAGSHUB_PAT="${{ secrets.DAGSHUB_PAT }}" \
-            -e DAGSHUB_USERNAME="${{ secrets.DAGSHUB_USERNAME }}" \
-            ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
+      - name: Push docker image to ECR
+        run: |
+          docker push 385105852594.dkr.ecr.us-east-1.amazonaws.com/aayush/sentiment_analyzer:latest
