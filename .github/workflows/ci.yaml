@@ -78,3 +78,16 @@ jobs:
         if: success()
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
+
+      - name: Deploy to ec2
+        if: success()
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST}}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
+            docker stop emotion-detection2 || true
+            docker rm emotion-detection2 || true
+            docker run -d --name emotion-detection2 -p 5000:5000 ${{ secrets.DOCKER_HUB_USERNAME }}/emotion-detection2:latest
