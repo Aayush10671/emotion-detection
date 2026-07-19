@@ -110,3 +110,23 @@ jobs:
       - name: Push docker image to ECR
         run: |
           docker push 385105852594.dkr.ecr.us-east-1.amazonaws.com/aayush/sentiment_analyzer:latest
+
+      - name: Deploy to AWS EC2
+        if: success()
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST}}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 385105852594.dkr.ecr.us-east-1.amazonaws.com
+            docker pull 385105852594.dkr.ecr.us-east-1.amazonaws.com/aayush/sentiment_analyzer:latest
+            docker stop sentiment_analyzer || true
+            docker rm sentiment_analyzer || true
+            docker run -d --name sentiment_analyzer -p 80:5000 \
+            -e DAGSHUB_PAT="${{ secrets.DAGSHUB_PAT }}" \ 
+            -e DAGSHUB_USERNAME="${{ secrets.DAGSHUB_USERNAME }}" \
+            385105852594.dkr.ecr.us-east-1.amazonaws.com/aayush/sentiment_analyzer:latest
+            
